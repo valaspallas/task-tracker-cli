@@ -1,0 +1,26 @@
+{
+    "counter": 3,
+    "tasks": [
+        {
+            "id": 1,
+            "description": "Clean up the code",
+            "status": "done",
+            "createdAt": "2024-08-26T18:40:05.068298",
+            "updatedAt": "2024-08-26T18:40:30.767944"
+        },
+        {
+            "id": 2,
+            "description": "Grind 10 hours of WOW",
+            "status": "in-progress",
+            "createdAt": "2024-08-26T18:42:24.608123",
+            "updatedAt": "2024-08-26T18:42:51.132050"
+        },
+        {
+            "id": 3,
+            "description": "Feed the cat",
+            "status": "todo",
+            "createdAt": "2024-08-26T18:42:36.126967",
+            "updatedAt": "2024-08-26T18:42:36.126967"
+        }
+    ]
+}

@@ -47,22 +47,34 @@ def create_initial_json():
         "counter": 0,
         "tasks": []
     }
-    with open(file_path, 'w') as file:
-        json.dump(initial_data, file, indent=4)
-    print("Initialized tasks.json with counter 0")
+    try:
+        with open(file_path, 'w') as file:
+            json.dump(initial_data, file, indent=4)
+        print("Initialized tasks.json with counter 0")
+    except IOError as e:
+        print(f"Error: Failed to create initial JSON file: {e}")
+
 
 # Load tasks from the JSON file
 def load_tasks():
     if not os.path.exists(file_path):
         create_initial_json()
-    with open(file_path, 'r') as file:
-        return json.load(file)
+    try:
+        with open(file_path, 'r') as file:
+          return json.load(file)
+    except IOError as e:
+        print(f"Error: Failed to load tasks: {e}")
+        return {"counter": 0, "tasks": []}
+
 
 # Save tasks to the JSON file
 def save_tasks(data):
-    with open(file_path, 'w') as file:
-        json.dump(data, file, indent=4)
-    print(f"Tasks saved to {file_path}")
+    try:
+        with open(file_path, 'w') as file:
+            json.dump(data, file, indent=4)
+        print(f"Tasks saved to {file_path}")
+    except IOError as e:
+        print(f"Error: Failed to save tasks: {e}")
 
 # Add a new task
 def add_task(description):
@@ -92,7 +104,7 @@ def update_task(task_id, description):
             save_tasks(data)
             print(f"Task {task_id} updated")
             return
-    print(f"Task {task_id} not found")
+    print(f"Error: Task {task_id} not found")
 
 # Delete task by ID
 def delete_task(task_id):
@@ -101,7 +113,7 @@ def delete_task(task_id):
     data["tasks"] = [task for task in data["tasks"] if task["id"] != task_id]
     if len(data["tasks"]) < initial_task_count:
         save_tasks(data)
-        print(f"Task {task_id} deleted successfully")
+        print(f"Task {task_id} deleted")
     else:
         print(f"Task {task_id} not found")
 
@@ -131,22 +143,34 @@ if args.action == "add":
     add_task(args.description_or_id)
 elif args.action == "update":
     if args.description_or_id and args.new_description:
-        update_task(int(args.description_or_id), args.new_description)
+        try:
+            update_task(int(args.description_or_id), args.new_description)
+        except ValueError:
+            print("Error: Task ID must be an integer.")
     else:
-        print("Task ID and new description are required for this action")
+        print("Error: Task ID and new description are required for this action")
 elif args.action == "delete":
     if args.description_or_id:
-        delete_task(int(args.description_or_id))
+        try:
+            delete_task(int(args.description_or_id))
+        except ValueError:
+            print("Error: Task ID must be an integer.")
     else:
         print("Task ID is required for this action")
 elif args.action == "mark_in_progress":
     if args.description_or_id:
-        mark_task(int(args.description_or_id), "in-progress")
+        try:
+            mark_task(int(args.description_or_id), "in-progress")
+        except ValueError:
+            print("Error: Task ID must be an integer.")
     else:
         print("Task ID is required for this action")
 elif args.action == "mark_done":
     if args.description_or_id:
-        mark_task(int(args.description_or_id), "done")
+        try:
+            mark_task(int(args.description_or_id), "done")
+        except ValueError:
+            print("Error: Task ID must be an integer.")
     else:
         print("Task ID is required for this action")
 elif args.action == "list_all":
