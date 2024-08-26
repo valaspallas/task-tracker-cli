@@ -90,11 +90,24 @@ def update_task(task_id, description):
             print(f"Task {task_id} updated successfully")
             return
 
+# Delete task by ID
 def delete_task(task_id):
     data = load_tasks()
     data["tasks"] = [task for task in data["tasks"] if task["id"] != task_id]
     save_tasks(data)
     print(f"Task {task_id} deleted")
+
+# Mark task by ID with status
+
+def mark_task(task_id, status):
+    data = load_tasks()
+    for task in data["tasks"]:
+        if task["id"] == task_id:
+            task["status"] = status
+            task["updatedAt"] = formatted_time
+            save_tasks(data)
+            print(f"Task {task_id} marked as {status}")
+            return
 
 if args.action == "add":
     if args.description:
@@ -105,10 +118,12 @@ elif args.action == "update":
 elif args.action == "delete":
     if args.task_id:
         delete_task(args.task_id)
-elif args.action in "mark_in_progress":
-    print("Marking task as in progress...")
-elif args.action in "done":
-    print("Marking task as done...")
+elif args.action == "mark_in_progress":
+    if args.task_id:
+        mark_task(args.task_id, "in-progress")
+elif args.action == "mark_done":
+    if args.task_id:
+        mark_task(args.task_id, "done")
 elif args.action in "list_all":
     print("Listing all tasks...")
 elif args.action in "list_done":
