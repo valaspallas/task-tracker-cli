@@ -117,7 +117,16 @@ def mark_task(task_id, status):
             return
     print(f"Task {task_id} not found")
 
+# List tasks, optionally by status
+def list_tasks(status=None):
+    data = load_tasks()
+    tasks = data["tasks"]
+    if status:
+        tasks = [task for task in tasks if task["status"] == status]
+    for task in tasks:
+        print(f"ID: {task['id']}, Description: {task['description']}, Status: {task['status']}, Created At: {task['createdAt']}, Updated At: {task['updatedAt']}")
 
+# Action handling
 if args.action == "add":
     add_task(args.description_or_id)
 elif args.action == "update":
@@ -140,12 +149,14 @@ elif args.action == "mark_done":
         mark_task(int(args.description_or_id), "done")
     else:
         print("Task ID is required for this action")
-elif args.action in "list_all":
-    print("Listing all tasks...")
-elif args.action in "list_done":
-    print("Listing all done tasks...")
-elif args.action in "list_not_done":
-    print("Listing all not done tasks...")
-elif args.action in "list_in_progress":
-    print("Listing all tasks in progress...")
+elif args.action == "list_all":
+    list_tasks()
+elif args.action == "list_done":
+    list_tasks("done")
+elif args.action == "list_not_done":
+    list_tasks("todo")
+elif args.action == "list_in_progress":
+    list_tasks("in-progress")
+else:
+    print("Unknown action")
 
