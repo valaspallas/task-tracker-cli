@@ -3,8 +3,10 @@ import os
 import json
 from datetime import datetime
 
-parser = argparse.ArgumentParser(description="ClI Task Tracker")
+# Set up the argument parser
+parser = argparse.ArgumentParser(description="ClI Task Tracker", formatter_class=argparse.RawTextHelpFormatter)
 
+# Define the actions and arguments
 parser.add_argument(
     "action",
     type=str,
@@ -36,10 +38,21 @@ parser.add_argument("task_id", type=int, nargs='?', help="ID of the task")
 
 args = parser.parse_args()
 
+file_path = 'tasks.json'
+formatted_time = datetime.now().isoformat()
+
+def create_initial_json():
+    initial_data = {
+        "counter": 0,
+        "tasks": []
+    }
+    with open(file_path, 'w') as file:
+        json.dump(initial_data, file, indent=4)
+    print("Initialized tasks.json with counter 0")
 
 
-if args.action in "add":
-    print("Adding a new task:");
+if args.action == "add":
+    create_initial_json()
 elif args.action in "update":
     print("Updating a task...")
 elif args.action in "delete":
@@ -48,7 +61,7 @@ elif args.action in "mark_in_progress":
     print("Marking task as in progress...")
 elif args.action in "done":
     print("Marking task as done...")
-elif args.action in "list":
+elif args.action in "list_all":
     print("Listing all tasks...")
 elif args.action in "list_done":
     print("Listing all done tasks...")
