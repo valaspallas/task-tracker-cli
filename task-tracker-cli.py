@@ -41,6 +41,7 @@ args = parser.parse_args()
 file_path = 'tasks.json'
 formatted_time = datetime.now().isoformat()
 
+# Create the initial json file if it doesn't exist
 def create_initial_json():
     initial_data = {
         "counter": 0,
@@ -50,9 +51,37 @@ def create_initial_json():
         json.dump(initial_data, file, indent=4)
     print("Initialized tasks.json with counter 0")
 
+# Load tasks from the json file
+def load_tasks():
+    with open(file_path, 'r') as file:
+        return json.load(file)
+
+# Save tasks to the json file
+def save_tasks(data):
+    with open(file_path, 'w') as file:
+        json.dump(data, file, indent=4)
+
+#
+def add_task(description):
+    if not os.path.exists(file_path):
+        create_initial_json()
+
+    data = load_tasks()
+    data["counter"] += 1
+    new_task = {
+        'id': data["counter"],
+        'description': description,
+        'status': 'todo',
+        'createdAt': formatted_time,
+        'updatedAt': formatted_time
+    }
+    data["tasks"].append(new_task)
+    save_tasks(data)
+    print(f"Task added with (ID: {new_task['id']})")
 
 if args.action == "add":
-    create_initial_json()
+    if args.description:
+        add_task(args.description)
 elif args.action in "update":
     print("Updating a task...")
 elif args.action in "delete":
