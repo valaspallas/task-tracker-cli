@@ -33,8 +33,8 @@ parser.add_argument(
         list_in_progress        - List all tasks in progress"""
 )
 
-parser.add_argument("description", type=str, nargs='?', help="Description of the task")
 parser.add_argument("task_id", type=int, nargs='?', help="ID of the task")
+parser.add_argument("description", type=str, nargs='?', help="Description of the task")
 
 args = parser.parse_args()
 
@@ -61,7 +61,7 @@ def save_tasks(data):
     with open(file_path, 'w') as file:
         json.dump(data, file, indent=4)
 
-#
+# Add a new task
 def add_task(description):
     if not os.path.exists(file_path):
         create_initial_json()
@@ -79,11 +79,24 @@ def add_task(description):
     save_tasks(data)
     print(f"Task added with (ID: {new_task['id']})")
 
+# Update an existing task
+def update_task(task_id, description):
+    data = load_tasks()
+    for task in data["tasks"]:
+        if task["id"] == task_id:
+            task["description"] = description
+            task["updatedAt"] = formatted_time
+            save_tasks(data)
+            print(f"Task {task_id} updated successfully")
+            return
+    
+
 if args.action == "add":
     if args.description:
         add_task(args.description)
-elif args.action in "update":
-    print("Updating a task...")
+elif args.action == "update":
+    if args.task_id and args.description:
+        update_task(args.task_id, args.description)
 elif args.action in "delete":
     print("Deleting a task...")
 elif args.action in "mark_in_progress":
