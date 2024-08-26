@@ -138,49 +138,52 @@ def list_tasks(status=None):
     for task in tasks:
         print(f"ID: {task['id']}, Description: {task['description']}, Status: {task['status']}, Created At: {task['createdAt']}, Updated At: {task['updatedAt']}")
 
-# Action handling
-if args.action == "add":
-    add_task(args.description_or_id)
-elif args.action == "update":
-    if args.description_or_id and args.new_description:
-        try:
-            update_task(int(args.description_or_id), args.new_description)
-        except ValueError:
-            print("Error: Task ID must be an integer.")
+def main():
+    # Action handling
+    if args.action == "add":
+        add_task(args.description_or_id)
+    elif args.action == "update":
+        if args.description_or_id and args.new_description:
+            try:
+                update_task(int(args.description_or_id), args.new_description)
+            except ValueError:
+                print("Error: Task ID must be an integer.")
+        else:
+            print("Error: Task ID and new description are required for this action")
+    elif args.action == "delete":
+        if args.description_or_id:
+            try:
+                delete_task(int(args.description_or_id))
+            except ValueError:
+                print("Error: Task ID must be an integer.")
+        else:
+            print("Task ID is required for this action")
+    elif args.action == "mark_in_progress":
+        if args.description_or_id:
+            try:
+                mark_task(int(args.description_or_id), "in-progress")
+            except ValueError:
+                print("Error: Task ID must be an integer.")
+        else:
+            print("Task ID is required for this action")
+    elif args.action == "mark_done":
+        if args.description_or_id:
+            try:
+                mark_task(int(args.description_or_id), "done")
+            except ValueError:
+                print("Error: Task ID must be an integer.")
+        else:
+            print("Task ID is required for this action")
+    elif args.action == "list_all":
+        list_tasks()
+    elif args.action == "list_done":
+        list_tasks("done")
+    elif args.action == "list_not_done":
+        list_tasks("todo")
+    elif args.action == "list_in_progress":
+        list_tasks("in-progress")
     else:
-        print("Error: Task ID and new description are required for this action")
-elif args.action == "delete":
-    if args.description_or_id:
-        try:
-            delete_task(int(args.description_or_id))
-        except ValueError:
-            print("Error: Task ID must be an integer.")
-    else:
-        print("Task ID is required for this action")
-elif args.action == "mark_in_progress":
-    if args.description_or_id:
-        try:
-            mark_task(int(args.description_or_id), "in-progress")
-        except ValueError:
-            print("Error: Task ID must be an integer.")
-    else:
-        print("Task ID is required for this action")
-elif args.action == "mark_done":
-    if args.description_or_id:
-        try:
-            mark_task(int(args.description_or_id), "done")
-        except ValueError:
-            print("Error: Task ID must be an integer.")
-    else:
-        print("Task ID is required for this action")
-elif args.action == "list_all":
-    list_tasks()
-elif args.action == "list_done":
-    list_tasks("done")
-elif args.action == "list_not_done":
-    list_tasks("todo")
-elif args.action == "list_in_progress":
-    list_tasks("in-progress")
-else:
-    print("Unknown action")
+        print("Unknown action")
 
+if __name__ == "__main__":
+    main()
