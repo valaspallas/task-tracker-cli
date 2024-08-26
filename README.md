@@ -31,7 +31,7 @@ git clone https://github.com/valaspallas/task-tracker-cli
 2. **Navigate to the Project Directory**
 
 ```sh
-cd projects/todo
+cd projects/task-tracker-cli
 ```
 
 ## Usage
@@ -41,51 +41,51 @@ Run the script with the desired action and arguments.
 ### Add a New Task
 
 ```sh
-python todo.py add "task description"
+python task-tracker-cli.py add "task description"
 ```
 
 ### Update an existing Task
 
 ```sh
-python todo.py update 2 "new task description"
+python task-tracker-cli.py update 2 "new task description"
 ```
 
 ### Delete a Task
 ```sh
-python todo.py delete 3
+python task-tracker-cli.py delete 3
 ```
 
 ### Mark a Task as In Progress
 ```sh
-python todo.py mark_in_progress task_id
+python task-tracker-cli.py mark_in_progress task_id
 ```
 
 ### Mark a Task as Done
 
 ```sh
-python todo.py mark_done task_id
+python task-tracker-cli.py mark_done task_id
 ```
 
 ### List All Tasks
 
 ```sh
-python todo.py list_all
+python task-tracker-cli.py list_all
 ```
 
 ### List Done Tasks
 
 ```sh
-python todo.py list_done
+python task-tracker-cli.py list_done
 ```
 
 ### List Not Done Tasks
 
 ```sh
-python todo.py list_not_done
+python task-tracker-cli.py list_not_done
 ```
 
 ### List Tasks In Progress
 
 ```sh
-python todo.py list_in_progress
+python task-tracker-cli.py list_in_progress
 ```
