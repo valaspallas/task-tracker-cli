@@ -33,15 +33,15 @@ parser.add_argument(
         list_in_progress        - List all tasks in progress"""
 )
 
-parser.add_argument("task_id", type=int, nargs='?', help="ID of the task")
-parser.add_argument("description", type=str, nargs='?', help="Description of the task")
+parser.add_argument("description_or_id", type=str, nargs='?', help="Description of the task for 'add' action or ID of the task for other actions")
+parser.add_argument("new_description", type=str, nargs='?', help="New description for the 'update' action")
 
 args = parser.parse_args()
 
 file_path = 'tasks.json'
 formatted_time = datetime.now().isoformat()
 
-# Create the initial json file if it doesn't exist
+# Create the initial JSON file if it doesn't exist
 def create_initial_json():
     initial_data = {
         "counter": 0,
@@ -51,21 +51,24 @@ def create_initial_json():
         json.dump(initial_data, file, indent=4)
     print("Initialized tasks.json with counter 0")
 
-# Load tasks from the json file
+# Load tasks from the JSON file
 def load_tasks():
+    if not os.path.exists(file_path):
+        create_initial_json()
     with open(file_path, 'r') as file:
         return json.load(file)
 
-# Save tasks to the json file
+# Save tasks to the JSON file
 def save_tasks(data):
     with open(file_path, 'w') as file:
         json.dump(data, file, indent=4)
+    print(f"Tasks saved to {file_path}")
 
 # Add a new task
 def add_task(description):
-    if not os.path.exists(file_path):
-        create_initial_json()
-
+    if not description:
+        print("Error: Task description cannot be empty.")
+        return
     data = load_tasks()
     data["counter"] += 1
     new_task = {
@@ -77,7 +80,7 @@ def add_task(description):
     }
     data["tasks"].append(new_task)
     save_tasks(data)
-    print(f"Task added with (ID: {new_task['id']})")
+    print(f"Task added (ID: {new_task['id']})")
 
 # Update an existing task
 def update_task(task_id, description):
@@ -87,18 +90,22 @@ def update_task(task_id, description):
             task["description"] = description
             task["updatedAt"] = formatted_time
             save_tasks(data)
-            print(f"Task {task_id} updated successfully")
+            print(f"Task {task_id} updated")
             return
+    print(f"Task {task_id} not found")
 
 # Delete task by ID
 def delete_task(task_id):
     data = load_tasks()
+    initial_task_count = len(data["tasks"])
     data["tasks"] = [task for task in data["tasks"] if task["id"] != task_id]
-    save_tasks(data)
-    print(f"Task {task_id} deleted")
+    if len(data["tasks"]) < initial_task_count:
+        save_tasks(data)
+        print(f"Task {task_id} deleted successfully")
+    else:
+        print(f"Task {task_id} not found")
 
-# Mark task by ID with status
-
+# Mark a task with status
 def mark_task(task_id, status):
     data = load_tasks()
     for task in data["tasks"]:
@@ -108,22 +115,31 @@ def mark_task(task_id, status):
             save_tasks(data)
             print(f"Task {task_id} marked as {status}")
             return
+    print(f"Task {task_id} not found")
+
 
 if args.action == "add":
-    if args.description:
-        add_task(args.description)
+    add_task(args.description_or_id)
 elif args.action == "update":
-    if args.task_id and args.description:
-        update_task(args.task_id, args.description)
+    if args.description_or_id and args.new_description:
+        update_task(int(args.description_or_id), args.new_description)
+    else:
+        print("Task ID and new description are required for this action")
 elif args.action == "delete":
-    if args.task_id:
-        delete_task(args.task_id)
+    if args.description_or_id:
+        delete_task(int(args.description_or_id))
+    else:
+        print("Task ID is required for this action")
 elif args.action == "mark_in_progress":
-    if args.task_id:
-        mark_task(args.task_id, "in-progress")
+    if args.description_or_id:
+        mark_task(int(args.description_or_id), "in-progress")
+    else:
+        print("Task ID is required for this action")
 elif args.action == "mark_done":
-    if args.task_id:
-        mark_task(args.task_id, "done")
+    if args.description_or_id:
+        mark_task(int(args.description_or_id), "done")
+    else:
+        print("Task ID is required for this action")
 elif args.action in "list_all":
     print("Listing all tasks...")
 elif args.action in "list_done":
